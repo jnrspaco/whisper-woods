@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0a0a;
+  --fg: #c4c0b0;
+  --green: #4a7a5a;
+  --green-dim: #2d4d35;
+  --red: #8b2020;
+  --red-glow: rgba(139, 32, 32, 0.3);
+  --amber: #b08830;
+  --font-display: 'Courier New', monospace;
+  --font-body: Georgia, serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body), Georgia, serif;
+  overflow-x: hidden;
+}
+
+.fog {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(40, 40, 40, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(30, 30, 30, 0.2) 0%, transparent 50%);
+  animation: fog-drift 20s ease-in-out infinite alternate;
+}
+
+@keyframes fog-drift {
+  0% { opacity: 0.4; transform: translateX(-5%); }
+  100% { opacity: 0.7; transform: translateX(5%); }
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: box-shadow 2s ease, background 2s ease;
+}
+
+.vignette--low {
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.7);
+}
+
+.vignette--medium {
+  box-shadow: inset 0 0 150px rgba(60, 10, 10, 0.6);
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(80, 10, 10, 0.15) 100%);
+}
+
+.vignette--high {
+  box-shadow: inset 0 0 200px rgba(100, 10, 10, 0.7);
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(120, 10, 10, 0.25) 100%);
+  animation: pulse-red 3s ease-in-out infinite;
+}
+
+.vignette--critical {
+  box-shadow: inset 0 0 250px rgba(139, 20, 20, 0.8);
+  background: radial-gradient(ellipse at center, transparent 20%, rgba(139, 20, 20, 0.35) 100%);
+  animation: pulse-red 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-color: var(--green); }
+  50% { border-color: transparent; }
+}
+
+.cursor-blink {
+  border-right: 2px solid var(--green);
+  animation: blink-cursor 1s step-end infinite;
+}
+
+@keyframes flicker {
+  0%, 97%, 100% { opacity: 1; }
+  98% { opacity: 0.85; }
+  99% { opacity: 0.95; }
+}
+
+.screen-flicker {
+  animation: flicker 4s linear infinite;
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(74, 122, 90, 0.3);
+}
+
+.text-glow-red {
+  text-shadow: 0 0 10px rgba(139, 32, 32, 0.4);
+}
+
+.terminal-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terminal-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(74, 122, 90, 0.3);
+  border-radius: 2px;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.tension-bar {
+  transition: width 1.5s ease, background 1.5s ease;
+}
+
+.input-horror:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(74, 122, 90, 0.2);
+}
+
+.input-horror--danger:focus {
+  box-shadow: 0 0 15px rgba(139, 32, 32, 0.3);
+}
+
+@keyframes item-appear {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.inventory-item {
+  animation: item-appear 0.4s ease-out forwards;
+}
+
+@keyframes game-over-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.game-over-overlay {
+  animation: game-over-in 2s ease-out forwards;
+}
+
+/* ── Screen shake ── */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-8px, -4px); }
+  20% { transform: translate(6px, 5px); }
+  30% { transform: translate(-5px, -3px); }
+  40% { transform: translate(7px, 2px); }
+  50% { transform: translate(-4px, 6px); }
+  60% { transform: translate(5px, -5px); }
+  70% { transform: translate(-6px, 3px); }
+  80% { transform: translate(4px, -4px); }
+  90% { transform: translate(-3px, 5px); }
+}
+
+.screen-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ── Glitch text ── */
+@keyframes glitch {
+  0%, 90%, 100% { transform: none; opacity: 1; }
+  91% { transform: skewX(-2deg) translateX(-2px); opacity: 0.8; }
+  93% { transform: skewX(3deg) translateX(3px); opacity: 0.7; }
+  95% { transform: skewX(-1deg) translateX(-1px); opacity: 0.9; }
+  97% { transform: none; opacity: 0.85; }
+}
+
+@keyframes glitch-color {
+  0%, 88%, 100% { text-shadow: none; }
+  90% { text-shadow: 2px 0 #8b2020, -2px 0 #2d4d35; }
+  92% { text-shadow: -2px 0 #8b2020, 2px 0 #2d4d35; }
+  94% { text-shadow: 1px 0 #8b2020, -1px 0 #2d4d35; }
+}
+
+.glitch-text {
+  animation: glitch 4s linear infinite, glitch-color 4s linear infinite;
+}
+
+/* ── Heartbeat pulse ── */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.05); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.08); }
+  56% { transform: scale(1); }
+}
+
+.heartbeat-pulse {
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+
+.heartbeat-pulse--fast {
+  animation: heartbeat 0.8s ease-in-out infinite;
+}
+
+/* ── Stat counter ── */
+@keyframes count-up {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.stat-appear {
+  animation: count-up 0.6s ease-out forwards;
+}
