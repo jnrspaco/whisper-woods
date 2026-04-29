@@ -16,6 +16,7 @@ export default function Home() {
   const [typingText, setTypingText] = useState('');
   const [typingDone, setTypingDone] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [suggestedActions, setSuggestedActions] = useState([]);
   const [stats, setStats] = useState({ peakTension: 0, screamCount: 0, itemsFound: 0 });
 
   const messagesRef = useRef([]);
@@ -176,12 +177,13 @@ export default function Home() {
   }
 
   async function processGameResponse(gameData, playerAction) {
-    const { narrative, soundPrompt, tension: newTension, inventory: newInventory, turnNumber: turn, gameOver, ending: gameEnding, hint: newHint } = gameData;
+    const { narrative, soundPrompt, tension: newTension, inventory: newInventory, turnNumber: turn, gameOver, ending: gameEnding, hint: newHint, suggestedActions: newActions } = gameData;
 
     setTension(newTension);
     setInventory(newInventory || []);
     setTurnNumber(turn);
     setHint(newHint || '');
+    setSuggestedActions(newActions || []);
 
     // Track stats
     if (playerAction) {
@@ -257,6 +259,7 @@ export default function Home() {
     setTypingText('');
     setTypingDone(false);
     setStats({ peakTension: 0, screamCount: 0, itemsFound: 0 });
+    setSuggestedActions([]);
     messagesRef.current = [];
     prevTensionRef.current = 0;
     stopHeartbeat();
@@ -436,6 +439,21 @@ export default function Home() {
             )}
             {hint && phase === 'idle' && (
               <p className="text-xs italic opacity-25" style={{ color: '#b08830' }}>{'💡 '}{hint}</p>
+            )}
+            {suggestedActions.length > 0 && phase === "idle" && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {suggestedActions.map((action, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => { setInput(action); setSuggestedActions([]); setTimeout(() => { const form = document.querySelector("form"); if (form) form.requestSubmit(); }, 50); }}
+                    className="text-xs px-3 py-1.5 rounded-full transition hover:opacity-80"
+                    style={{ background: isHighTension ? "rgba(139, 32, 32, 0.15)" : "rgba(74, 122, 90, 0.15)", color: isHighTension ? "#c4a0a0" : "#4a7a5a", border: "1px solid " + (isHighTension ? "rgba(139, 32, 32, 0.25)" : "rgba(74, 122, 90, 0.25)"), fontFamily: "var(--font-display)" }}
+                  >
+                    {action}
+                  </button>
+                ))}
+              </div>
             )}
             <form onSubmit={handleSubmit} className="flex items-center gap-3">
               <span style={{ fontFamily: 'var(--font-display)', color: isHighTension ? '#8b2020' : '#4a7a5a' }}>{'>'}</span>

@@ -43,7 +43,8 @@ You MUST respond with ONLY valid JSON, no markdown, no backticks, no preamble:
   "turnNumber": 1,
   "gameOver": false,
   "ending": null,
-  "hint": "A subtle 1-sentence hint about what the player could try"
+  "hint": "A subtle 1-sentence hint about what the player could try",
+  "suggestedActions": ["look around", "pick up stick", "hide"]
 }
 
 When gameOver is true, set ending to "ESCAPE", "CONSUMED", or "EMBRACE".
@@ -53,7 +54,8 @@ IMPORTANT:
 - Sound prompts should be specific and atmospheric
 - The first response should set the scene
 - Never use the same sound prompt twice in a row
-- Make the player FEEL something`;
+- Make the player FEEL something
+- Always include 3 suggestedActions — short action phrases the player might try next`;
 
 export function buildOpeningPrompt() {
   return "The player has just woken up in the forest. Set the opening scene. This is turn 1. Start tension at 1.";
