@@ -133,26 +133,36 @@ export default function Home() {
   async function playNarration(text) {
     try {
       setIsNarrating(true);
-      const res = await fetch('/api/narrate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/narrate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
-      if (!res.ok) return;
+      if (!res.ok) { setIsNarrating(false); return; }
       const blob = await res.blob();
       if (narrationUrlRef.current) URL.revokeObjectURL(narrationUrlRef.current);
       const url = URL.createObjectURL(blob);
       narrationUrlRef.current = url;
       const audio = narrationAudioRef.current;
+      audio.oncanplaythrough = null;
+      audio.onended = null;
+      audio.onerror = null;
+      audio.pause();
+      audio.currentTime = 0;
       audio.src = url;
       audio.volume = 0.9;
-      audio.load();
       return new Promise((resolve) => {
-        audio.oncanplaythrough = () => { audio.play(); };
+        const onReady = () => {
+          audio.removeEventListener("canplaythrough", onReady);
+          audio.play();
+        };
+        audio.addEventListener("canplaythrough", onReady);
         audio.onended = () => { setIsNarrating(false); resolve(); };
         audio.onerror = () => { setIsNarrating(false); resolve(); };
+        audio.load();
       });
     } catch { setIsNarrating(false); }
+  }
   }
 
   async function playAmbient(soundPrompt) {
