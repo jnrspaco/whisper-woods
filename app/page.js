@@ -197,11 +197,12 @@ export default function Home() {
     }
 
     playAmbient(soundPrompt);
+    const narrationPromise = playNarration(narrative);
     await typeText(narrative);
     setEntries((prev) => [...prev, { type: 'narration', text: narrative, tension: newTension }]);
     setTypingText('');
     setTypingDone(false);
-    await playNarration(narrative);
+    await narrationPromise;
 
     if (gameOver) {
       setEnding(gameEnding);
